@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Teló Final · Màster</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@700&display=swap">
+<link rel="stylesheet" href="css/estil.css">
+<style>
+  .pagina { max-width: 1100px; margin: 0 auto; padding: 18px 16px 60px; }
+  .cap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+  .cap .titol-joc { font-size: 30px; }
+  .graella { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+  .fases { display: flex; flex-wrap: wrap; gap: 8px; }
+  .fases .boto-sec { min-height: 48px; }
+  .fases .boto-sec.actual { background: var(--daurat); color: var(--tinta); border-color: var(--daurat); font-weight: 800; }
+  .xifres { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .xifra { background: var(--tinta-clara); border-radius: var(--radius-md); padding: 12px; text-align: center; }
+  .xifra b { display: block; font-family: var(--font-display); font-size: 30px; color: var(--daurat); line-height: 1.1; }
+  .xifra span { font-size: 12px; color: var(--fum); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--linia); vertical-align: middle; }
+  th { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fum-calid); }
+  td .codi { font-family: var(--font-mono); font-weight: 700; letter-spacing: 0.15em; color: var(--daurat); }
+  .taula-scroll { overflow-x: auto; }
+  .mini { min-height: 36px; padding: 0 10px; font-size: 13px; }
+  .paper-dolent { color: var(--corall); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+  .ok-si { color: #8FD19E; font-weight: 700; }
+  .ok-no { color: var(--fum); }
+  details summary { cursor: pointer; font-weight: 700; color: var(--daurat); min-height: 44px; display: flex; align-items: center; }
+  .toggle { display: flex; align-items: center; gap: 10px; min-height: 48px; }
+  .toggle input { width: 22px; height: 22px; accent-color: var(--corall); }
+  .enllac { word-break: break-all; font-family: var(--font-mono); font-size: 12px; background: var(--tinta-clara); padding: 8px 10px; border-radius: 8px; display: block; color: var(--crema); }
+  #impressio { display: none; }
+  @media print {
+    body { background: #fff; color: #000; }
+    .pagina, #modal { display: none !important; }
+    #impressio { display: grid !important; grid-template-columns: repeat(3, 1fr); gap: 0; }
+    .tiquet { border: 1px dashed #999; padding: 10px; text-align: center; break-inside: avoid; font-family: Inter, sans-serif; color: #000; }
+    .tiquet .t-nom { font-size: 16px; font-weight: 700; }
+    .tiquet .t-pers { font-size: 12px; color: #444; }
+    .tiquet .t-codi { font-family: "JetBrains Mono", monospace; font-size: 22px; font-weight: 700; letter-spacing: .25em; margin: 4px 0; }
+    .tiquet svg { width: 110px; height: 110px; margin: 0 auto; display: block; }
+    .tiquet .t-url { font-size: 9px; color: #444; word-break: break-all; }
+  }
+  .modal-fons { position: fixed; inset: 0; background: rgba(20,16,20,.8); display: flex; align-items: center; justify-content: center; padding: 18px; z-index: 50; }
+  .modal { background: var(--bordeus); border: 2px solid var(--daurat); border-radius: var(--radius-lg); padding: 20px; max-width: 420px; width: 100%; text-align: center; }
+  .modal svg { background: #fff; padding: 10px; border-radius: 8px; width: 240px; height: 240px; margin: 12px auto; display: block; }
+</style>
+</head>
+<body>
+<div class="pagina">
+  <div class="cap">
+    <h1 class="titol-joc">TELÓ <span>FINAL</span> <span style="color:var(--fum);font-size:18px;font-family:var(--font-sans);font-weight:600;letter-spacing:0">· Màster</span></h1>
+    <span class="fase" id="fase-actual">…</span>
+  </div>
+
+  <section id="vista-login" hidden>
+    <div class="panell" style="max-width:420px">
+      <h2 id="login-titol">Entra com a màster</h2>
+      <p class="petit" id="login-text">Escriu la contrasenya de màster.</p>
+      <form id="form-login">
+        <div class="camp"><label for="pwd">Contrasenya</label><input id="pwd" type="password" autocomplete="current-password" required></div>
+        <div class="camp" id="camp-pwd2" hidden><label for="pwd2">Repeteix-la</label><input id="pwd2" type="password" autocomplete="new-password"></div>
+        <div id="login-error" class="avis error" hidden></div>
+        <button class="boto boto-ample" type="submit" id="login-boto">Entra</button>
+      </form>
+    </div>
+  </section>
+
+  <section id="vista-panell" hidden>
+    <div class="graella">
+      <div class="panell" style="grid-column: 1 / -1">
+        <h2>Ritme de la partida</h2>
+        <p class="petit suau" id="fase-text" style="margin-top:-4px"></p>
+        <div class="fases" id="fases"></div>
+        <div class="xifres" style="margin-top:14px">
+          <div class="xifra"><b id="n-jugadors">0</b><span>jugadors</span></div>
+          <div class="xifra"><b id="n-vots">0</b><span>han votat</span></div>
+          <div class="xifra"><b id="n-missions">0</b><span>missions fetes</span></div>
+        </div>
+      </div>
+
+      <div class="panell">
+        <h2>Peticions</h2>
+        <div id="peticions"><p class="petit suau">No hi ha res pendent.</p></div>
+      </div>
+
+      <div class="panell">
+        <h2>Revelació</h2>
+        <label class="toggle"><input type="checkbox" id="rev-pantalla"> Mostrar la solució a la pantalla gran</label>
+        <label class="toggle"><input type="checkbox" id="rev-mobils"> Mostrar la solució als mòbils</label>
+        <p class="petit suau">Primer tanca la votació. La pantalla gran fa la revelació pas a pas (clica o prem la barra espaiadora).</p>
+        <details id="det-resultats" style="margin-top:6px"><summary>Resultats provisionals (spoiler)</summary><div id="resultats-prov" class="petit"></div></details>
+      </div>
+
+      <div class="panell">
+        <h2>Enllaços</h2>
+        <p class="petit" style="margin:0 0 4px">Pantalla gran (obre-la a l'ordinador del projector):</p>
+        <a class="enllac" id="url-pantalla" target="_blank" rel="noopener"></a>
+        <p class="petit" style="margin:12px 0 4px">Web dels jugadors:</p>
+        <a class="enllac" id="url-jugadors" target="_blank" rel="noopener"></a>
+        <div class="fila" style="margin-top:12px"><button class="boto-sec" id="qr-general">QR de la web</button></div>
+      </div>
+
+      <div class="panell" style="grid-column: 1 / -1">
+        <div class="fila" style="justify-content:space-between">
+          <h2 style="margin:0">Jugadors</h2>
+          <div class="fila">
+            <button class="boto-sec" id="imprimir">Imprimir codis</button>
+            <button class="boto-sec" id="reiniciar">Reiniciar la partida</button>
+          </div>
+        </div>
+        <div id="sense-jugadors" hidden style="margin-top:12px">
+          <p class="petit">Escriu el nom de cada persona, un per línia (mínim 8, màxim 28). L'app repartirà els personatges a l'atzar i donarà un codi a cadascú.</p>
+          <textarea id="noms" placeholder="Laia&#10;Jordi&#10;Marta&#10;…"></textarea>
+          <p class="petit suau" id="compta-noms">0 noms</p>
+          <button class="boto" id="repartir">Repartir personatges</button>
+        </div>
+        <div id="amb-jugadors" hidden>
+          <div class="taula-scroll" style="margin-top:10px">
+            <table>
+              <thead><tr><th>Persona</th><th>Personatge</th><th>Codi</th><th>Missió</th><th>Vot</th><th></th></tr></thead>
+              <tbody id="taula-jugadors"></tbody>
+            </table>
+          </div>
+          <div class="fila" style="margin-top:12px">
+            <input id="nou-nom" type="text" placeholder="Algú que arriba tard" style="max-width:280px">
+            <button class="boto-sec" id="afegir">Afegeix jugador</button>
+          </div>
+          <p class="petit suau" id="avis-coartades"></p>
+        </div>
+      </div>
+
+      <div class="panell" style="grid-column: 1 / -1">
+        <details><summary>La solució (només per a tu)</summary>
+          <p class="petit">L'assassina és la <b>Rita Balanç</b> (Comptabilitat), amb el <b>cable d'un focus</b>, a les <b>bambalines</b>. El còmplice és en <b>Pau Canvi</b> (Taquiller). Al guió de validació tens totes les pistes i la cadena de deducció.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+  <div id="error-general" class="avis error" hidden></div>
+</div>
+
+<div id="impressio"></div>
+<div id="modal" class="modal-fons" hidden></div>
+
+<script src="vendor/supabase.js"></script>
+<script src="vendor/qrcode.js"></script>
+<script src="js/config.js"></script>
+<script src="js/comu.js"></script>
+<script src="js/master.js"></script>
+</body>
+</html>

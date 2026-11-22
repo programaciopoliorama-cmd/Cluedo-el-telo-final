@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#242026">
+<title>Teló Final</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@700&display=swap">
+<link rel="stylesheet" href="css/estil.css">
+<style>
+  body { min-height: 100dvh; }
+  .app { max-width: 480px; margin: 0 auto; min-height: 100dvh; display: flex; flex-direction: column; }
+  .capcal { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 16px 10px; position: sticky; top: 0; background: var(--tinta); z-index: 5; }
+  .capcal .titol-joc { font-size: 22px; }
+  .benvinguda img.capcalera { width: 100%; aspect-ratio: 1199 / 1312; object-fit: cover; border-bottom: 3px solid var(--daurat); }
+  .benvinguda .cos { padding: 20px 18px 28px; }
+  .benvinguda h1 { font-size: 44px; margin: 10px 0 12px; }
+  main.contingut { flex: 1; padding: 6px 16px 110px; }
+  .navegacio {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px;
+    padding: 8px 10px calc(10px + env(safe-area-inset-bottom));
+    background: #1C181E; border-top: 1px solid #3A3340;
+    max-width: 480px; margin: 0 auto;
+  }
+  .pestanya { min-height: 52px; border: none; border-radius: 10px; background: transparent; color: var(--fum); font-size: 12px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; position: relative; }
+  .pestanya svg { width: 20px; height: 20px; }
+  .pestanya[aria-current="page"] { background: var(--tinta-clara); color: var(--corall); font-weight: 700; }
+  .pestanya .punt { position: absolute; top: 6px; right: calc(50% - 18px); width: 9px; height: 9px; border-radius: 50%; background: var(--corall); }
+  .rumor {
+    background: var(--tinta-clara); border: 1px solid var(--corall); border-radius: var(--radius-md);
+    padding: 12px 14px; margin-bottom: 12px;
+  }
+  .rumor .etiqueta { color: var(--corall); }
+  .rumor p { margin: 4px 0 0; font-style: italic; }
+  .forense { background: var(--blau); color: #fff; border-radius: var(--radius-md); padding: 14px; margin-bottom: 14px; }
+  .forense .etiqueta { color: #E6EEF2; }
+  .forense p { margin: 6px 0 0; font-size: 14px; }
+  .dir-cerca { margin-bottom: 12px; }
+  .dir-llista { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .dir-item { background: var(--crema); color: var(--tinta); border-radius: var(--radius-md); overflow: hidden; border: 2px solid var(--dept); }
+  .dir-item img { width: 100%; aspect-ratio: 1/1; object-fit: contain; background: #EDE0C8; }
+  .dir-item .text { padding: 8px 10px 10px; }
+  .dir-item .nom { font-family: var(--font-display); font-weight: 800; font-size: 16px; line-height: 1.15; }
+  .dir-item .rol { text-align: left; font-size: 10px; margin-top: 2px; }
+  .dir-item .real { font-size: 13px; color: var(--tinta-suau); margin-top: 4px; }
+  .dir-item .real b { color: var(--tinta); }
+  .opcions-vot { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .opcio-sosp { background: var(--crema); color: var(--tinta); border: 3px solid transparent; border-radius: var(--radius-md); padding: 0 0 6px; cursor: pointer; text-align: center; font-size: 12px; font-weight: 600; line-height: 1.2; }
+  .opcio-sosp img { width: 100%; aspect-ratio: 1/1; object-fit: contain; background: #EDE0C8; border-radius: 9px 9px 0 0; margin-bottom: 4px; }
+  .opcio-sosp[aria-pressed="true"] { border-color: var(--corall); box-shadow: 0 0 0 2px var(--corall); }
+  .opcions-text { display: flex; flex-wrap: wrap; gap: 8px; }
+  .opcio-text { min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--linia); background: var(--tinta-clara); color: var(--crema); font-size: 14px; font-weight: 600; cursor: pointer; }
+  .opcio-text[aria-pressed="true"] { border-color: var(--corall); color: #fff; background: var(--corall); }
+  h2.seccio { font-family: var(--font-display); font-weight: 800; font-size: 24px; margin: 8px 0 12px; }
+  h3.sub { font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fum-calid); margin: 18px 0 8px; }
+  .estat-missio { display: inline-block; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; }
+  .estat-missio.feta { background: #2E6B3A; color: #fff; }
+  .estat-missio.pendent { background: var(--tinta-clara); color: var(--fum); }
+  .resultat-codi { font-size: 13px; padding: 6px 0; border-bottom: 1px solid var(--linia); }
+  .modal-fons { position: fixed; inset: 0; background: rgba(20,16,20,.75); display: flex; align-items: center; justify-content: center; padding: 18px; z-index: 50; }
+  .modal { background: var(--bordeus); border: 2px solid var(--daurat); border-radius: var(--radius-lg); padding: 20px; max-width: 420px; width: 100%; }
+  .modal h2 { font-family: var(--font-display); color: var(--daurat); margin: 0 0 8px; }
+  .revelacio-cap { text-align: center; margin: 8px 0 16px; }
+  .revelacio-cap img { width: 180px; margin: 10px auto; border-radius: var(--radius-md); background: #EDE0C8; border: 3px solid var(--telo); }
+  .rank { display: flex; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--linia); font-size: 14px; }
+  .rank.jo { color: var(--daurat); font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Entrada / benvinguda -->
+  <section id="vista-entrada" class="benvinguda">
+    <img class="capcalera" src="img/capcalera-mobil.jpg" alt="Escenari amb el teló vermell entreobert, un focus i la silueta de guix d'un cos a terra">
+    <div class="cos">
+      <span class="fase" id="entrada-fase">Nit d'estrena</span>
+      <h1 class="titol-joc">TELÓ <span>FINAL</span></h1>
+      <p>Nit d'estrena. En Max Bambalina, el gran divo de la casa, ha aparegut mort darrere el teló. Ningú no ha sortit del teatre: l'assassí és entre nosaltres.</p>
+      <p class="suau petit">Escriu el codi de 4 lletres que t'ha donat el màster per veure la teva carta.</p>
+      <form id="form-codi" class="separat" autocomplete="off">
+        <div>
+          <label for="input-codi">El teu codi</label>
+          <input id="input-codi" class="input-codi" type="text" inputmode="text" maxlength="4" placeholder="ABCD" required>
+        </div>
+        <div id="entrada-error" class="avis error" hidden></div>
+        <button class="boto boto-ample" type="submit">Veure la meva carta</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Joc -->
+  <section id="vista-joc" hidden>
+    <header class="capcal">
+      <div class="titol-joc">TELÓ <span>FINAL</span></div>
+      <span class="fase" id="joc-fase">…</span>
+    </header>
+    <main class="contingut">
+      <div id="avisos"></div>
+      <div id="tab-carta" class="tab"></div>
+      <div id="tab-directori" class="tab" hidden></div>
+      <div id="tab-missio" class="tab" hidden></div>
+      <div id="tab-votar" class="tab" hidden></div>
+      <div id="tab-resultats" class="tab" hidden></div>
+    </main>
+    <nav class="navegacio" aria-label="Seccions">
+      <button class="pestanya" data-tab="carta" aria-current="page" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6"/></svg>Carta
+      </button>
+      <button class="pestanya" data-tab="directori" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 4a3 3 0 0 1 0 6M18 14c2 .7 3 2.8 3 6"/></svg>Directori
+      </button>
+      <button class="pestanya" data-tab="missio" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>Missió
+      </button>
+      <button class="pestanya" data-tab="votar" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg>Votar
+      </button>
+    </nav>
+  </section>
+
+  <div id="modal" class="modal-fons" hidden></div>
+</div>
+
+<script src="vendor/supabase.js"></script>
+<script src="js/config.js"></script>
+<script src="js/comu.js"></script>
+<script src="js/jugador.js"></script>
+</body>
+</html>
